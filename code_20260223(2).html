@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的笔记</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    padding: 25px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f7f8fa;
+    max-width: 500px;
+    margin: 0 auto;
+    transition: background 0.3s;
+    position: relative;
+  }
+  .help-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #007aff;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .help-content {
+    background: #fff;
+    width: 90%;
+    max-width: 380px;
+    padding: 24px;
+    border-radius: 16px;
+  }
+  .help-content h4 {
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+  .help-content p {
+    line-height: 1.6;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .help-close {
+    margin-top: 16px;
+    padding: 10px;
+    width: 100%;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  h3 {
+    margin-bottom: 18px;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+    margin-bottom: 12px;
+    outline: none;
+  }
+
+  .skin-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .skin {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  }
+  .skin-default { background: #f7f8fa; }
+  .skin-red { background: #ffeaea; }
+  .skin-yellow { background: #fff9e6; }
+  .skin-blue { background: #e6f7ff; }
+  .skin-purple { background: #f3e6ff; }
+  .skin-green { background: #e6ffed; }
+  .skin-gradient1 { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
+  .skin-gradient2 { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+  .skin-gradient3 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+  input, textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 1px solid #e1e4e8;
+    border-radius: 14px;
+    outline: none;
+    background: #fff;
+  }
+  textarea {
+    height: 120px;
+    resize: none;
+  }
+  button {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 14px;
+    margin: 6px 0;
+    background: #007aff;
+    color: white;
+    cursor: pointer;
+  }
+  .item {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .title {
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+  .time {
+    font-size: 12px;
+    color: #999;
+    margin: 8px 0 10px;
+  }
+  .del {
+    background: #ff3b30;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 10px;
+    margin-right: 4px;
+  }
+  .edit {
+    background: #ff9500;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+  .edited {
+    font-size: 12px;
+    color: #007aff;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<button class="help-btn" onclick="openHelp()">?</button>
+
+<h3>我的笔记</h3>
+
+<input type="text" class="search-box" placeholder="🔍 搜索标题或内容..." oninput="search(this.value)">
+
+<div class="skin-bar">
+  <div class="skin skin-default" onclick="setSkin('default')"></div>
+  <div class="skin skin-red" onclick="setSkin('red')"></div>
+  <div class="skin skin-yellow" onclick="setSkin('yellow')"></div>
+  <div class="skin skin-blue" onclick="setSkin('blue')"></div>
+  <div class="skin skin-purple" onclick="setSkin('purple')"></div>
+  <div class="skin skin-green" onclick="setSkin('green')"></div>
+  <div class="skin skin-gradient1" onclick="setSkin('gradient1')"></div>
+  <div class="skin skin-gradient2" onclick="setSkin('gradient2')"></div>
+  <div class="skin skin-gradient3" onclick="setSkin('gradient3')"></div>
+</div>
+
+<input type="text" id="title" placeholder="标题">
+<textarea id="text" placeholder="内容"></textarea>
+
+<button onclick="add()">保存</button>
+<button onclick="clear_all()">清空所有</button>
+<div id="list"></div>
+
+<div class="help-modal" id="helpModal">
+  <div class="help-content">
+    <h4>使用说明</h4>
+    <p>• 输入标题和内容，点击「保存」即可记录笔记</p>
+    <p>• 顶部搜索框可查找笔记里的任何文字</p>
+    <p>• 点击「修改」可编辑已有笔记，会记录修改时间与当日天气</p>
+    <p>• 点击彩色圆点切换背景皮肤</p>
+    <p>• 数据存在本地，刷新不会丢</p>
+    <button class="help-close" onclick="closeHelp()">我知道了</button>
+  </div>
+</div>
+
+<script>
+var editIndex = -1;
+
+// 随机天气（演示用，稳定不报错）
+function getTodayWeather() {
+  const weathers = ["晴天", "多云", "阴天", "小雨", "微风", "大雾", "雪"];
+  return weathers[Math.floor(Math.random() * weathers.length)];
+}
+
+function openHelp() { document.getElementById('helpModal').style.display = 'flex'; }
+function closeHelp() { document.getElementById('helpModal').style.display = 'none'; }
+
+function setSkin(skin) {
+  document.body.className = '';
+  document.body.classList.add('skin-' + skin);
+  localStorage.setItem('skin', skin);
+}
+
+function getNotes() {
+  return JSON.parse(localStorage.getItem('notes') || '[]')
+}
+
+function show(keyword = '') {
+  var notes = getNotes();
+  var html = '';
+  for (var i = 0; i < notes.length; i++) {
+    var title = notes[i].title || '';
+    var text = notes[i].text || '';
+    if (keyword && !title.includes(keyword) && !text.includes(keyword)) continue;
+    
+    html += '<div class="item">'
+    html += '<div class="title">' + title + '</div>'
+    html += '<div>' + text + '</div>'
+    html += '<div class="time">创建时间：' + notes[i].time + '</div>'
+    if (notes[i].editedTime) {
+      html += '<div class="edited">最后修改：' + notes[i].editedTime + ' · ' + notes[i].weather + '</div>'
+    }
+    html += '<button class="edit" onclick="startEdit(' + i + ')">修改</button>'
+    html += '<button class="del" onclick="del(' + i + ')">删除</button>'
+    html += '</div>'
+  }
+  document.getElementById('list').innerHTML = html;
+}
+
+function search(keyword) {
+  show(keyword.trim());
+}
+
+// 开始修改
+function startEdit(index) {
+  var notes = getNotes();
+  editIndex = index;
+  document.getElementById('title').value = notes[index].title || '';
+  document.getElementById('text').value = notes[index].text || '';
+}
+
+// 保存 / 修改
+function add() {
+  var title = document.getElementById('title').value.trim()
+  var t = document.getElementById('text').value.trim()
+  if (!t) return
+
+  var notes = getNotes()
+  var now = new Date().toLocaleString()
+  var weather = getTodayWeather();
+
+  if (editIndex === -1) {
+    // 新增
+    notes.unshift({
+      title: title || '无标题',
+      text: t,
+      time: now,
+      editedTime: '',
+      weather: ''
+    })
+  } else {
+    // 修改
+    notes[editIndex].title = title || '无标题'
+    notes[editIndex].text = t
+    notes[editIndex].editedTime = now
+    notes[editIndex].weather = weather
+    editIndex = -1
+  }
+
+  localStorage.setItem('notes', JSON.stringify(notes))
+  document.getElementById('title').value = ''
+  document.getElementById('text').value = ''
+  show()
+}
+
+function del(index) {
+  if (!confirm('确定删除？')) return
+  var notes = getNotes()
+  notes.splice(index, 1)
+  localStorage.setItem('notes', JSON.stringify(notes))
+  show()
+}
+
+function clear_all() {
+  if (!confirm('确定清空所有？')) return
+  localStorage.removeItem('notes')
+  show()
+}
+
+window.onload = function() {
+  let savedSkin = localStorage.getItem('skin') || 'default';
+  setSkin(savedSkin);
+  show();
+}
+</script>
+</body>
+</html>
