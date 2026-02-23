@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的笔记 v1.0.0</title>
+<title>我的笔记 v1.0.2 稳定版</title>
 <style>
   * {
     margin: 0;
@@ -175,6 +175,12 @@
     color: #007aff;
     margin-bottom: 8px;
   }
+  .version {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-top: 20px;
+  }
 </style>
 </head>
 <body>
@@ -216,13 +222,19 @@
   </div>
 </div>
 
+<div class="version">v1.0.2 稳定版（无报错）</div>
+
 <script>
 var editIndex = -1;
 
-// 随机天气（演示用，稳定不报错）
+// 稳定版：按季节显示天气，不请求接口，绝不报错
 function getTodayWeather() {
-  const weathers = ["晴天", "多云", "阴天", "小雨", "微风", "大雾", "雪"];
-  return weathers[Math.floor(Math.random() * weathers.length)];
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  if (month >= 3 && month <= 5) return "春季·多云";
+  if (month >= 6 && month <= 8) return "夏季·晴天";
+  if (month >= 9 && month <= 11) return "秋季·凉爽";
+  return "冬季·温和";
 }
 
 function openHelp() { document.getElementById('helpModal').style.display = 'flex'; }
@@ -264,7 +276,6 @@ function search(keyword) {
   show(keyword.trim());
 }
 
-// 开始修改
 function startEdit(index) {
   var notes = getNotes();
   editIndex = index;
@@ -272,7 +283,6 @@ function startEdit(index) {
   document.getElementById('text').value = notes[index].text || '';
 }
 
-// 保存 / 修改
 function add() {
   var title = document.getElementById('title').value.trim()
   var t = document.getElementById('text').value.trim()
@@ -283,7 +293,6 @@ function add() {
   var weather = getTodayWeather();
 
   if (editIndex === -1) {
-    // 新增
     notes.unshift({
       title: title || '无标题',
       text: t,
@@ -292,7 +301,6 @@ function add() {
       weather: ''
     })
   } else {
-    // 修改
     notes[editIndex].title = title || '无标题'
     notes[editIndex].text = t
     notes[editIndex].editedTime = now
